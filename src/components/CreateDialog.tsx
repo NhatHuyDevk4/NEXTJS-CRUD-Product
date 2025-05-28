@@ -120,9 +120,10 @@ export default function CreateDialog() {
                     <Textarea
                         id="description"
                         placeholder="Type your message here."
-                        rows={5}
+                        rows={8}
                         value={formData.description}
                         onChange={(e) => handleChange("description", e.target.value)}
+                        className="max-h-[300px] overflow-y-auto h-[290px]"
                     />
                     <div className="grid grid-cols-2 gap-4 gap-y-2 mt-2">
                         <div>

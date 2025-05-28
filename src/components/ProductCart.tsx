@@ -43,9 +43,11 @@ const ProjectCard = ({
           className="text-xl font-semibold mb-2 hover:cursor-pointer hover:text-primary transition-colors duration-300">
           {name}
         </h3>
-        <p className="text-muted-foreground mb-4">{description}</p>
+        <p className="text-muted-foreground ">
+          {description.length > 100 ? `${description.slice(0, 250)}...` : description}
+        </p>
         {/* Price Badge */}
-        <Badge variant="secondary" className="rounded-full">
+        <Badge variant="secondary" className="rounded-full text-[15px] font-bold mt-2">
           {category}
         </Badge>
 
@@ -54,7 +56,7 @@ const ProjectCard = ({
           {id && (
             <>
               <Badge variant={'outline'} className="bg-primary text-primary-foreground text-xl">
-                Price: ${price}
+                {price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
               </Badge>
               <Button variant="default" className="rounded-full" asChild>
                 <Button onClick={() => router.push(productUrl)} className="hover:cursor-pointer">
@@ -85,7 +87,7 @@ const ProductCart = () => {
   };
 
   const displayedProducts = data?.allProducts.slice(0, displayCount); // dùng slice để lấy số lượng sản phẩm hiển thị
-  
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center mt-10">
