@@ -56,9 +56,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         <div className="basis-2/4 flex flex-col justify-between">
           <CardContent className="mt-8 space-y-3">
             <CardTitle className="text-5xl font-bold">{product.name}</CardTitle>
-            <CardTitle className="text-3xl font-bold">${product.price}</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {product.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            </CardTitle>
             <div className="flex flex-wrap gap-2 mb-6">
-              <Badge variant="secondary" className="rounded-full">
+              <Badge variant="secondary" className="rounded-full text-2xl">
                 {product.category}
               </Badge>
             </div>

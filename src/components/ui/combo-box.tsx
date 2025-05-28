@@ -34,6 +34,7 @@ const productCategories = [
     { value: "accessories", label: "Accessories" },
     { value: "hat", label: "Hat" },
     { value: "bag", label: "Bag" },
+    { value: "technology", label: "Mobile" },
 ];
 
 export function Combobox({ value, onChange }: ComboboxProps) {
