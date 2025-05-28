@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight, CirclePlay, GithubIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
+import Spline from '@splinetool/react-spline';
 const Hero = () => {
     return (
         <div className="min-h-[calc(100vh-4rem)] w-full flex items-center justify-center overflow-hidden border-b border-accent">
@@ -37,15 +37,23 @@ const Hero = () => {
                                 Wath on GitHub
                             </Link>
                         </Button>
+
                     </div>
                 </div>
                 <div className="relative lg:max-w-lg xl:max-w-xl w-full bg-accent rounded-xl aspect-square">
-                    <Image
+                    {/* <Image
                         src="/siudz.svg"
                         alt="Ảnh minh họa"
                         className="object-cover rounded-xl"
                         fill
+                    /> */}
+                    <Spline
+                        className="w-full h-full rounded-xl relative"
+                        scene="https://prod.spline.design/WlSZ2TdTCWB50sAC/scene.splinecode"
                     />
+                    <p className="absolute bottom-4 font-bold right-4 text-muted-foreground bg-primary h-[40px] text-2xl text-center  flex items-center justify-center rounded-full px-4 py-2">
+                        Lê Nhật Huy / QE180061
+                    </p>
                 </div>
             </div>
         </div >
