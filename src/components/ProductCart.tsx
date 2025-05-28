@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react"; // Import useState for managing load more state
 import { LoadingSpinner } from "./LoadingSpinner";
+import Spline from "@splinetool/react-spline";
 
 const ProjectCard = ({
   name,
@@ -108,7 +109,18 @@ const ProductCart = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="relative w-full h-[500px]">
+          <Spline
+            className="w-full relative rounded-md"
+            scene="https://prod.spline.design/aohz741gAfLDRXkc/scene.splinecode"
+          />
+          <p
+            className="absolute right-0 bottom-5 bg-gray-500 p-3 mr-2 rounded-lg font-bold text-pretty text-white dark:tex-white  ">
+            Iphone 14 Pro Max
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
           {displayedProducts?.map((project, index) => (
             <ProjectCard key={index} {...project} />
           ))}
