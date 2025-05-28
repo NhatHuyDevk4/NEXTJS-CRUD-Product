@@ -1,0 +1,232 @@
+
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { EditIcon, X } from "lucide-react";
+import { Combobox } from "./ui/combo-box";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { useState } from "react";
+import { Textarea } from "./ui/textarea";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import { editProduct, getproductById } from "@/actions/product.action";
+import { UploadButton } from "@/lib/uploadthing";
+
+type Product = NonNullable<Awaited<ReturnType<typeof getproductById>>>;
+
+interface EditDialogProps {
+    product: Product;
+}
+
+export default function EditDialog({ product }: EditDialogProps) {
+    const [formData, setFormData] = useState(() => ({
+        name: product.name.trim(),
+        description: (product.description || "").trim(),
+        stock: product.stock,
+        price: product.price,
+        category: product?.category?.trim() || "",
+        userId: product.userId.trim(),
+        image: product.image || "",
+    }));
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleChange = (field: string, value: string | number) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    const { mutate } = useMutation({
+        mutationFn: (data: typeof formData) => editProduct(product.id, data),
+        onSuccess: (newProduct) => {
+            console.log("Product edited:", newProduct);
+            toast.success("Product edited successfully");
+        },
+        onError: (error) => {
+            console.error("Error editing product:", error);
+            toast.error("Failed to edit product");
+        },
+    });
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            if (!formData.image) {
+                toast.error("Please upload an image for the product");
+                return;
+            }
+            mutate(formData);
+        } catch (error) {
+            console.error("Error editing product:", error);
+            toast.error("Failed to edit product");
+        }
+    };
+
+    return (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button
+                    variant="secondary"
+                    className="ml-auto flex items-center gap-2"
+                    asChild
+                >
+                    <span>
+                        <EditIcon className="w-4 h-4" />
+                        Edit product
+                    </span>
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Edit Product</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Update the details below to edit the product in your inventory.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-2 gap-4 mb-2">
+                        <div>
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                                className="mt-2"
+                                id="name"
+                                type="text"
+                                placeholder="Enter name"
+                                value={formData.name}
+                                onChange={(e) => handleChange("name", e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <Label className="mb-2" htmlFor="category">Category</Label>
+                            <Combobox
+                                value={formData.category || ""}
+                                onChange={(val) => handleChange("category", val)}
+                            />
+                        </div>
+                    </div>
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                        id="description"
+                        className="mt-2"
+                        placeholder="Type your message here."
+                        rows={5}
+                        value={formData.description}
+                        onChange={(e) => handleChange("description", e.target.value)}
+                    />
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                        <div>
+                            <Label htmlFor="stock">Stock</Label>
+                            <Input
+                                className="mt-2"
+                                id="stock"
+                                type="number"
+                                placeholder="Enter stock quantity"
+                                value={formData.stock || ""}
+                                onChange={(e) => handleChange("stock", Number(e.target.value))}
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="price">Price</Label>
+                            <Input
+                                className="mt-2"
+                                id="price"
+                                type="number"
+                                placeholder="Enter price"
+                                value={formData.price}
+                                onChange={(e) => handleChange("price", Number(e.target.value))}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Image Upload */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                            Product Photo *
+                        </h3>
+
+                        <div className="space-y-3">
+                            {formData.image ? (
+                                <div className="relative group">
+                                    <div className="relative w-full h-64 rounded-xl overflow-hidden bg-gray-100">
+                                        <img
+                                            src={formData.image}
+                                            alt="Product preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button
+                                                onClick={() => handleChange("image", "")}
+                                                className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors"
+                                                type="button"
+                                            >
+                                                <X className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-gray-600 text-center mt-2">
+                                        Hover over image and click X to remove
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    <div
+                                        className={`relative w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors ${isUploading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                            }`}
+                                    >
+                                        <UploadButton
+                                            endpoint="postImage"
+                                            onClientUploadComplete={(res) => {
+                                                if (res && res[0]?.url) {
+                                                    handleChange("image", res[0].url);
+                                                    console.log("Files: ", res[0].url);
+                                                    toast.success("Image uploaded successfully");
+                                                }
+                                                setIsUploading(false);
+                                            }}
+                                            onUploadError={(error) => {
+                                                console.error("Upload error:", error);
+                                                toast.error(`Upload failed: ${error.message}`);
+                                                setIsUploading(false);
+                                            }}
+                                            onUploadBegin={() => {
+                                                setIsUploading(true);
+                                            }}
+                                            className="opacity-0 absolute inset-0 w-full h-full"
+                                        />
+                                        <div className="text-center">
+                                            <p className="text-sm text-blue-600 font-semibold">
+                                                {isUploading ? "Uploading..." : "Chọn file"}
+                                            </p>
+                                            <p className="text-xs text-gray-400 mt-1">
+                                                Supports JPG, PNG, up to 4MB
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-gray-500 text-center">
+                                        Upload a clear, high-quality photo of your product
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction type="submit" disabled={isUploading}>
+                            Submit
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </form>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+}

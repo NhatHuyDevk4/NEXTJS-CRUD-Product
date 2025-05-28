@@ -1,6 +1,12 @@
-import type { Metadata } from "next";
+// app/layout.tsx
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
+import Navbar from "@/components/Navbar";
+import Providers from "./providers";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,15 +25,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <StackProvider app={stackServerApp}>
+          <StackTheme>
+            <Providers>
+              <Toaster />
+              <Navbar />
+              {children}
+            </Providers>
+          </StackTheme>
+        </StackProvider>
       </body>
     </html>
   );
