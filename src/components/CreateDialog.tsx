@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { createProduct } from "@/actions/product.action";
 import { UploadButton } from "@/lib/uploadthing";
+import Image from "next/image";
 
 export default function CreateDialog() {
     const [formData, setFormData] = useState({
@@ -120,10 +121,10 @@ export default function CreateDialog() {
                     <Textarea
                         id="description"
                         placeholder="Type your message here."
-                        rows={8}
+                        rows={4}
                         value={formData.description}
                         onChange={(e) => handleChange("description", e.target.value)}
-                        className="max-h-[300px] overflow-y-auto h-[290px]"
+                        className="max-h-[300px] overflow-y-auto h-[100px]"
                     />
                     <div className="grid grid-cols-2 gap-4 gap-y-2 mt-2">
                         <div>
@@ -159,11 +160,14 @@ export default function CreateDialog() {
                         <div className="space-y-3">
                             {formData.image ? (
                                 <div className="relative group">
-                                    <div className="relative w-full h-64 rounded-xl overflow-hidden bg-gray-100">
-                                        <img
+                                    <div className="relative w-full h-64  max-h-52 rounded-xl overflow-hidden bg-gray-100">
+                                        <Image
                                             src={formData.image}
                                             alt="Plant preview"
                                             className="w-full h-full object-cover"
+                                            loading="lazy"
+                                            width={200}
+                                            height={200}
                                         />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <button
