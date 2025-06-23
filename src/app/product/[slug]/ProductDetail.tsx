@@ -11,7 +11,10 @@ import {
 import { getproductById } from "@/actions/product.action";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { RotateCcw, Shield, Truck } from "lucide-react";
+import { RotateCcw, Shield, ShoppingCart, Truck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
+import toast from "react-hot-toast";
 
 
 
@@ -23,6 +26,13 @@ interface ProductDetailProps {
 
 export default function ProductDetail({ product }: ProductDetailProps) {
 
+  const { addToCart } = useCartStore();
+
+  const handleAddToCart = async (productId: string) => {
+    await addToCart(productId, 1); // Thêm 1 sản phẩm vào giỏ
+    toast.success("Add successfully");
+  };
+
   if (!product) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -30,6 +40,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       </div>
     )
   }
+
 
   console.log("product", product);
 
@@ -85,6 +96,13 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </div>
             </CardContent>
+
+            <Button variant="default" className="rounded-full" asChild>
+              <Button onClick={() => handleAddToCart(product.id)} className="hover:cursor-pointer">
+                Thêm vào giỏ hàng
+                <ShoppingCart />
+              </Button>
+            </Button>
           </CardContent>
         </div>
       </div>

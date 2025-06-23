@@ -3,12 +3,14 @@ import { getAllProducts } from "@/actions/product.action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink, Eye } from "lucide-react";
+import { CirclePlus, ExternalLink, Eye, Plus, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react"; // Import useState for managing load more state
 import { LoadingSpinner } from "./LoadingSpinner";
 import Spline from "@splinetool/react-spline";
+import { useCartStore } from "@/store/cartStore";
+import toast from "react-hot-toast";
 
 const ProjectCard = ({
   name,
@@ -19,10 +21,15 @@ const ProjectCard = ({
   id
 }: any) => {
   const router = useRouter();
-
+  const { addToCart } = useCartStore();
   const slugFiedName = name.toLowerCase().replace(/\s+/g, '-');
   const slug = `${id}--${slugFiedName}`;
   const productUrl = `/product/${slug}`;
+
+  const handleAddToCart = async (productId: string) => {
+    await addToCart(productId, 1); // Thêm 1 sản phẩm vào giỏ
+    toast.success("Add successfully");
+  };
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-accent transition-all hover:border-primary/50">
@@ -63,6 +70,12 @@ const ProjectCard = ({
                 <Button onClick={() => router.push(productUrl)} className="hover:cursor-pointer">
                   <Eye className="mr-1 h-4 w-4" />
                   Detail
+                </Button>
+              </Button>
+
+              <Button variant="default" className="rounded-full" asChild>
+                <Button onClick={() => handleAddToCart(id)} className="hover:cursor-pointer">
+                  <ShoppingCart />
                 </Button>
               </Button>
             </>
