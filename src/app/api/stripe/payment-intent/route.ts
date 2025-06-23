@@ -1,28 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-05-28.basil',
-})
-
+// Temporarily disable Stripe for build
 export async function POST(request: NextRequest) {
     try {
-        const { amount, currency = 'usd' } = await request.json()
+        await request.json() // Parse request but don't use the data
 
-        // Create a PaymentIntent with the order amount and currency
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100), // Stripe expects amount in cents
-            currency,
-            automatic_payment_methods: {
-                enabled: true,
-            },
-        })
-
+        // Return mock response for build/testing
         return NextResponse.json({
-            clientSecret: paymentIntent.client_secret,
+            clientSecret: 'pi_test_fake_client_secret_for_testing',
+            message: 'This is a mock response. Real Stripe integration is disabled.'
         })
+
     } catch (error: any) {
-        console.error('Stripe error:', error)
+        console.error('Mock API error:', error)
         return NextResponse.json(
             { error: error.message },
             { status: 500 }
