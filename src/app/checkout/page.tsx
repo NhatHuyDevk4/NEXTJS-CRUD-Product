@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
-import StripeCheckout from '@/components/StripeCheckout2'
+import SimplePaymentCheckout from '@/components/SimplePaymentCheckout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
@@ -110,13 +110,13 @@ export default function CheckoutPage() {
                             </CardContent>
                         </Card>
                     </div>          {/* Payment Form */}
-                    <div>
-                        {/* StripeCheckout2 now uses direct placeOrder API (Stripe payment commented out) */}
-                        <StripeCheckout
-                            amount={total}
-                            onSuccess={handlePaymentSuccess}
-                        />
-                    </div>
+          <div>
+            {/* Simple payment form without Stripe */}
+            <SimplePaymentCheckout
+              amount={total}
+              onSuccess={handlePaymentSuccess}
+            />
+          </div>
                 </div>
             </div>
         </div>
