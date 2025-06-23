@@ -7,6 +7,7 @@ import { stackServerApp } from "../stack";
 import Navbar from "@/components/Navbar";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
+import CartIcon from "@/components/CartIcon";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,9 @@ export default function RootLayout({
             <Providers>
               <Toaster />
               <Navbar />
+              <div className="absolute top-4 right-4 z-50 fixed">
+                <CartIcon />
+              </div>
               {children}
             </Providers>
           </StackTheme>

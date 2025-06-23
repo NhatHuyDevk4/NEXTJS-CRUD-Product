@@ -2,18 +2,17 @@
 import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button'
-import { HomeIcon, ListPlus, LogIn, LogOut, SproutIcon } from 'lucide-react'
+import { HomeIcon, ListPlus, LogIn, LogOut, ShoppingCart, SproutIcon, History } from 'lucide-react'
 import ModeToggle from './ModeToggle'
 import { stackServerApp } from '@/stack'
 import { getUserDetails } from '@/actions/user.action'
 import { UserButton } from '@stackframe/stack'
-
+import { Badge } from "@/components/ui/badge"
 const Navbar = async () => {
 
     const user = await stackServerApp.getUser(); // Fetch the user data from StackFrame
     const app = stackServerApp.urls; // Get the app URLs from StackFrame
     const userProfile = await getUserDetails(user?.id);
-
     return (
         <nav className='sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50'>
             <div className='max-w-7xl mx-auto px-4'>
@@ -22,7 +21,7 @@ const Navbar = async () => {
                     {/* LOGO  */}
                     <div className='flex items-center'>
                         <Link href={'/'} className='text-xl font-bold text-primary font-mono tracking-wide'>
-                            <span className='text-primary'>Assignment</span> 1
+                            <span className='text-primary'>Assignment</span> 3
                         </Link>
                     </div>
 
@@ -30,16 +29,23 @@ const Navbar = async () => {
 
                     {/* {userProfile?.name && <span className="text-[14px] text-gray-600 dark:text-gray-300">
                         {`Hello, ${userProfile?.name.split(' ')[0]}`}
-                    </span>} */}
-
-
-                    <div className='hidden md:flex items-center  space-x-4'>
+                    </span>} */}                    <div className='hidden md:flex items-center  space-x-4'>
                         <Button variant="ghost" className='flex items-center gap-2' asChild>
                             <Link href={'/product'}>
                                 <ListPlus className='w-4 h-4' />
                                 <span className='hidden lg:inline'>Management Product</span>
                             </Link>
                         </Button>
+
+                        {/* Order History Button - Only show when user is logged in */}
+                        {user && (
+                            <Button variant="ghost" className='flex items-center gap-2' asChild>
+                                <Link href={'/order-history'}>
+                                    <History className='w-4 h-4' />
+                                    <span className='hidden lg:inline'>Order History</span>
+                                </Link>
+                            </Button>
+                        )}
 
                         {/* Home Button */}
                         <Button variant="ghost" className='flex items-center gap-2' asChild>
